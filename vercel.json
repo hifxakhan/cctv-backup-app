@@ -1,8 +1,8 @@
 {
   "framework": "create-react-app",
   "buildCommand": "npm run build",
-  "outputDirectory": "frontend/build",
-  "installCommand": "cd frontend && npm install",
+  "outputDirectory": "build",
+  "rootDirectory": "frontend",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

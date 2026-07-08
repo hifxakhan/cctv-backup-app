@@ -1,0 +1,7 @@
+.settings-card {
+  border-radius: 16px;
+}
+
+.settings-card .MuiCardContent-root {
+  padding: 24px;
+}

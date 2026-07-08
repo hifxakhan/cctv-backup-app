@@ -1,0 +1,13 @@
+﻿body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  transition: all 0.2s ease;
+}

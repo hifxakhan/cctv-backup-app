@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npx react-scripts build",
+  "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "installCommand": "npm install",
+  "installCommand": "npm install && chmod +x node_modules/.bin/react-scripts",
   "framework": "create-react-app",
   "rewrites": [
     {

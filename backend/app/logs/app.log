@@ -1112,3 +1112,17 @@ TypeError: GoogleDriveUploader.__init__() got an unexpected keyword argument 'cr
 2026-07-08 20:54:16,395 WARNING app.api.routes Unable to list ONVIF recordings: Unable to connect to ONVIF camera
 2026-07-08 20:54:16,414 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
 2026-07-08 20:54:17,656 INFO app.api.websocket Client disconnected from websocket
+2026-07-09 20:08:31,693 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-09 20:08:31,765 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-09 20:08:31,765 WARNING app.api.routes Unable to list ONVIF recordings: Unable to connect to ONVIF camera
+2026-07-10 18:37:27,716 INFO app.api.websocket Client connected to websocket
+2026-07-10 18:37:27,802 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:37:27,807 WARNING app.api.routes Unable to list ONVIF recordings: Unable to connect to ONVIF camera
+2026-07-10 18:37:27,823 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:37:28,512 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:37:28,513 WARNING app.api.routes Unable to list ONVIF recordings: Unable to connect to ONVIF camera
+2026-07-10 18:37:28,515 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:37:33,320 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:37:33,320 WARNING app.api.routes Unable to list ONVIF recordings: Unable to connect to ONVIF camera
+2026-07-10 18:37:33,473 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:40:25,456 INFO app.api.websocket Client disconnected from websocket

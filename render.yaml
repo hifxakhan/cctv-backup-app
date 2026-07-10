@@ -1,0 +1,44 @@
+# render.yaml
+services:
+  - type: web
+    name: cctv-backend
+    runtime: python
+    repo: https://github.com/hifxakhan/cctv-backup-app
+    branch: main
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: PROTOCOL_TYPE
+        value: onvif
+      - key: ONVIF_HOST
+        value: 192.168.1.100
+      - key: ONVIF_USER
+        value: admin
+      - key: ONVIF_PASSWORD
+        value: your_password
+      - key: ONVIF_DAYS_BACK
+        value: 3
+      - key: STORAGE_DESTINATION
+        value: both
+      - key: DRIVE_BACKUP_FOLDER
+        value: CCTV_Backup
+      - key: GOOGLE_OAUTH_CLIENT_ID
+        value: your_client_id
+      - key: GOOGLE_OAUTH_CLIENT_SECRET
+        value: your_client_secret
+      - key: GOOGLE_OAUTH_REDIRECT_URI
+        value: https://your-app-name.onrender.com/api/drive/oauth2callback
+      - key: FRONTEND_ORIGIN
+        value: https://cctv-backup-app.vercel.app
+      - key: SECRET_KEY
+        value: your_secret_key_here
+      - key: SESSION_SECRET_KEY
+        value: your_session_secret_here
+      - key: TOKEN_ENCRYPTION_KEY
+        value: your_32_character_key_here
+      - key: DEBUG
+        value: False

@@ -1126,3 +1126,9 @@ TypeError: GoogleDriveUploader.__init__() got an unexpected keyword argument 'cr
 2026-07-10 18:37:33,320 WARNING app.api.routes Unable to list ONVIF recordings: Unable to connect to ONVIF camera
 2026-07-10 18:37:33,473 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
 2026-07-10 18:40:25,456 INFO app.api.websocket Client disconnected from websocket
+2026-07-10 18:47:12,611 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:47:12,633 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:47:12,635 WARNING app.api.routes Unable to list ONVIF recordings: Unable to connect to ONVIF camera
+2026-07-10 18:47:34,338 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:47:34,372 WARNING app.camera.onvif_client ONVIF connection attempt failed for 192.168.1.100:80: ONVIF dependency is not installed: No module named 'onvif'
+2026-07-10 18:47:34,373 WARNING app.api.routes Unable to list ONVIF recordings: Unable to connect to ONVIF camera

@@ -20,6 +20,7 @@ from googleapiclient.discovery import build
 from ..config import Config
 from ..database.db_manager import DatabaseManager
 from ..deps import get_or_create_current_user, set_user_cookie, get_user_id
+from ..security import sign_user_id
 
 auth_bp = Blueprint("auth", __name__)
 logger = logging.getLogger(__name__)
@@ -171,7 +172,7 @@ def oauth2callback():
         logger.info("User %s (%s) authenticated with Google Drive", user_id, google_email)
 
         # Return success page that closes the popup
-        return _success_page(google_email)
+        return _success_page(google_email, user_id)
 
     except Exception as e:
         logger.error("OAuth callback error: %s", e)
@@ -258,8 +259,9 @@ def get_user_drive_service(user_id=None):
     return build("drive", "v3", credentials=credentials)
 
 
-def _success_page(user_email):
-    """HTML page shown after successful OAuth — sends postMessage to parent."""
+def _success_page(user_email, user_id):
+    """HTML page shown after successful OAuth — sends postMessage to parent with signed token."""
+    signed_token = sign_user_id(user_id)
     return f"""
     <!DOCTYPE html>
     <html>
@@ -286,7 +288,7 @@ def _success_page(user_email):
         <script>
             function closeWindow() {{
                 if (window.opener) {{
-                    window.opener.postMessage('drive_connected', '{FRONTEND_ORIGIN}');
+                    window.opener.postMessage({{type: 'drive_connected', token: '{signed_token}'}}, '{FRONTEND_ORIGIN}');
                 }}
                 window.close();
             }}

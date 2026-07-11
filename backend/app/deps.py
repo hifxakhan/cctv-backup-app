@@ -25,7 +25,7 @@ USER_COOKIE_MAX_AGE = 365 * 24 * 60 * 60
 
 def get_or_create_current_user() -> dict:
     """
-    Dependency that gets or creates a user from the signed cookie.
+    Dependency that gets or creates a user from the signed cookie or Authorization header.
     Attaches user info to Flask's g object.
     Returns the user dict.
     """
@@ -34,6 +34,21 @@ def get_or_create_current_user() -> dict:
         return g.current_user
 
     db = DatabaseManager()
+    
+    # First, check Authorization header (for cross-site requests)
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        signed_user_id = auth_header[7:]  # Remove "Bearer " prefix
+        user_id = verify_user_id(signed_user_id)
+        if user_id:
+            user = db.get_or_create_user(user_id)
+            logger.debug("Existing user from Authorization header: %s", user["id"])
+            g.current_user = user
+            return user
+        else:
+            logger.warning("Invalid user token in Authorization header")
+
+    # Fall back to cookie
     signed_user_id = request.cookies.get(USER_COOKIE_NAME)
 
     if signed_user_id:

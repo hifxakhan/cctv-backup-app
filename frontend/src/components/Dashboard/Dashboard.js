@@ -30,7 +30,11 @@ function Dashboard() {
         setProtocol(configResponse.data.protocol_type || 'onvif');
         setError('');
       } catch (err) {
-        setError('Backend is not reachable. Start the Flask server on port 5000 to enable live data.');
+        if (err.code === 'ECONNABORTED') {
+          setError('The server is waking up (this can take up to a minute on the first request). Please wait and try refreshing.');
+        } else {
+          setError('Unable to load dashboard data. Please try again.');
+        }
       } finally {
         setLoading(false);
       }

@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://cctv-backup.onren
 // Attach the signed user token to every request, if we have one
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000, // Increased to handle Render cold starts (up to 1 minute)
   withCredentials: true,
 });
 

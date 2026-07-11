@@ -39,6 +39,7 @@ import {
   saveProtocol,
   checkDriveStatus,
   disconnectDrive,
+  connectDrive,
 } from '../../services/api';
 
 const initialForm = {
@@ -212,7 +213,7 @@ function Settings() {
     const top = window.screen.height / 2 - height / 2;
 
     const popup = window.open(
-      'https://cctv-backup.onrender.com/api/drive/auth',
+      'https://cctv-backup.onrender.com/api/drive/auth?include_granted_scopes=false&prompt=consent',
       'Connect Google Drive',
       `width=${width},height=${height},left=${left},top=${top}`
     );

@@ -85,11 +85,15 @@ def drive_auth():
         if not flow:
             return jsonify({"error": "Failed to create OAuth flow. Check client_secrets.json format."}), 500
 
+        # Read prompt and include_granted_scopes from query params
+        prompt = request.args.get("prompt", "select_account")
+        include_granted_scopes = request.args.get("include_granted_scopes", "true")
+
         # Generate authorization URL
         auth_url, state = flow.authorization_url(
             access_type="offline",
-            include_granted_scopes="true",
-            prompt="select_account",
+            include_granted_scopes=include_granted_scopes,
+            prompt=prompt,
         )
 
         # Store state in Flask session (maps back to user when callback arrives)

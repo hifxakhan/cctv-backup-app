@@ -32,7 +32,8 @@ export const logoutDrive = () => api.post('/drive/auth/logout');
 // Session-based OAuth endpoints (using client_secrets.json)
 export const connectDrive = () => {
   const BASE_URL = process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://cctv-backup.onrender.com';
-  const authUrl = `${BASE_URL}/api/drive/auth?prompt=consent`;
+  // Force Google to show consent screen and NOT use cached scopes
+  const authUrl = `${BASE_URL}/api/drive/auth?include_granted_scopes=false&prompt=consent`;
   window.open(authUrl, 'Connect Google Drive', 'width=500,height=600');
 };
 export const checkDriveStatus = () => api.get('/drive/status');

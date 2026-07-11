@@ -44,8 +44,16 @@ def health_check():
 
 @api_bp.route("/stats", methods=["GET"])
 def get_stats():
-    stats = db.get_stats()
-    return jsonify(stats)
+    try:
+        stats = db.get_stats()
+        return jsonify(stats)
+    except Exception as e:
+        logger.error(f"Stats error: {e}")
+        return jsonify({
+            "total_files": 0,
+            "total_size_gb": 0.0,
+            "last_upload": None
+        }), 200
 
 
 @api_bp.route("/sync/start", methods=["POST"])
@@ -276,5 +284,3 @@ def browse_folder():
     except Exception as exc:
         logger.exception("Unable to open folder dialog")
         return jsonify({"status": "error", "message": str(exc)}), 500
-
-

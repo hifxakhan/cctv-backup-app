@@ -115,8 +115,9 @@ function Settings() {
   // Listen for OAuth success message from popup
   useEffect(() => {
     const handleMessage = (event) => {
-      // Check for the object shape: {type: 'drive_connected', token: '...'}
+      console.log('📨 Received message:', event.data);
       if (event.data?.type === 'drive_connected' && event.data?.token) {
+        console.log('✅ Drive connected message received! Token:', event.data.token);
         saveUserToken(event.data.token);
         checkDriveAuth();
       }
@@ -209,22 +210,32 @@ function Settings() {
   };
 
   const handleConnectDrive = () => {
-    // Open Google OAuth popup using session-based auth
     const width = 500;
     const height = 600;
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
 
-    window.open(
+    const popup = window.open(
       'https://cctv-backup.onrender.com/api/drive/auth?include_granted_scopes=false&prompt=consent',
       'Connect Google Drive',
       `width=${width},height=${height},left=${left},top=${top}`
     );
 
-    // Set a timeout to clear the "waiting" message if nothing happens (user closed popup without completing)
-    setTimeout(() => {
-      setStatus((prev) => prev.type === 'info' ? { type: 'success', message: '' } : prev);
-    }, 60000);
+    if (popup) {
+      const checkPopup = setInterval(() => {
+        if (popup.closed) {
+          clearInterval(checkPopup);
+          console.log('🔍 Popup closed, checking drive status...');
+          setTimeout(() => {
+            checkDriveAuth();
+          }, 1000);
+        }
+      }, 500);
+
+      setTimeout(() => {
+        clearInterval(checkPopup);
+      }, 60000);
+    }
 
     setStatus({
       type: 'info',

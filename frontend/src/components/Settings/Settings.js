@@ -219,27 +219,11 @@ function Settings() {
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
 
-    const popup = window.open(
+    window.open(
       'https://cctv-backup.onrender.com/api/drive/auth?include_granted_scopes=false&prompt=consent',
       'Connect Google Drive',
       `width=${width},height=${height},left=${left},top=${top}`
     );
-
-    if (popup) {
-      const checkPopup = setInterval(() => {
-        if (popup.closed) {
-          clearInterval(checkPopup);
-          console.log('🔍 Popup closed, checking drive status...');
-          setTimeout(() => {
-            checkDriveAuth();
-          }, 1000);
-        }
-      }, 500);
-
-      setTimeout(() => {
-        clearInterval(checkPopup);
-      }, 60000);
-    }
 
     setStatus({
       type: 'info',

@@ -217,28 +217,21 @@ function Settings() {
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
 
-    const popup = window.open(
+    window.open(
       'https://cctv-backup.onrender.com/api/drive/auth?include_granted_scopes=false&prompt=consent',
       'Connect Google Drive',
       `width=${width},height=${height},left=${left},top=${top}`
     );
 
-    if (popup) {
-      // Poll for popup close to refresh status
-      const checkPopup = setInterval(() => {
-        if (popup.closed) {
-          clearInterval(checkPopup);
-          setTimeout(() => {
-            checkDriveAuth();
-          }, 1500);
-        }
-      }, 500);
+    // Set a timeout to clear the "waiting" message if nothing happens (user closed popup without completing)
+    setTimeout(() => {
+      setStatus((prev) => prev.type === 'info' ? { type: 'success', message: '' } : prev);
+    }, 60000);
 
-      setStatus({
-        type: 'info',
-        message: 'A Google login window has opened. After signing in, this page will automatically detect the connection.',
-      });
-    }
+    setStatus({
+      type: 'info',
+      message: 'A Google login window has opened. After signing in, this page will automatically detect the connection.',
+    });
   };
 
   const handleDisconnectDrive = async () => {

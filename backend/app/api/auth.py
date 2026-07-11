@@ -8,6 +8,9 @@ import json
 import logging
 from datetime import datetime, timezone
 
+# Relax strict scope checking for OAuth - allows superset of scopes
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+
 from flask import Blueprint, request, jsonify, redirect, session, g
 
 from google_auth_oauthlib.flow import Flow

@@ -9,9 +9,14 @@ function UploadHistory() {
 
   useEffect(() => {
     const load = async () => {
-      const response = await getUploads({ limit: 50 });
-      setUploads(response.data);
-      setLoading(false);
+      try {
+        const response = await getUploads({ limit: 50 });
+        setUploads(response.data);
+      } catch (error) {
+        console.error('Failed to load uploads:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, []);

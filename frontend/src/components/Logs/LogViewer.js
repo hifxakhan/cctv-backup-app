@@ -9,9 +9,14 @@ function LogViewer() {
 
   useEffect(() => {
     const loadLogs = async () => {
-      const response = await getLogs({ limit: 100 });
-      setLogs(response.data.logs || []);
-      setLoading(false);
+      try {
+        const response = await getLogs({ limit: 100 });
+        setLogs(response.data.logs || []);
+      } catch (error) {
+        console.error('Failed to load logs:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     loadLogs();
   }, []);

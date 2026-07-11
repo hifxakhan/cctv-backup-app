@@ -8,9 +8,14 @@ function CameraList() {
 
   useEffect(() => {
     const loadCameras = async () => {
-      const response = await getCameras();
-      setCameras(response.data.cameras || []);
-      setLoading(false);
+      try {
+        const response = await getCameras();
+        setCameras(response.data.cameras || []);
+      } catch (error) {
+        console.error('Failed to load cameras:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     loadCameras();
   }, []);

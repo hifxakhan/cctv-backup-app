@@ -40,7 +40,7 @@ import {
   checkDriveStatus,
   disconnectDrive,
   connectDrive,
-  setAuthToken,
+  saveUserToken,
 } from '../../services/api';
 
 const initialForm = {
@@ -115,11 +115,9 @@ function Settings() {
   // Listen for OAuth success message from popup
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.data === 'drive_connected' || (event.data && event.data.type === 'drive_connected')) {
-        // Store the token if provided (for cross-site auth)
-        if (event.data && event.data.token) {
-          setAuthToken(event.data.token);
-        }
+      // Check for the object shape: {type: 'drive_connected', token: '...'}
+      if (event.data?.type === 'drive_connected' && event.data?.token) {
+        saveUserToken(event.data.token);
         checkDriveAuth();
       }
     };

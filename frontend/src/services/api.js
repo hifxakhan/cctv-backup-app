@@ -2,32 +2,24 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://cctv-backup.onrender.com/api';
 
-// Token storage for cross-site auth
-let authToken = null;
-
-// Initialize axios with auth token if available
+// Attach the signed user token to every request, if we have one
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
-  withCredentials: true,  // Required for session-based auth
+  withCredentials: true,
 });
 
-// Add request interceptor to include auth token
+// Attach the signed user token to every request, if we have one
 api.interceptors.request.use((config) => {
-  if (authToken) {
-    config.headers.Authorization = `Bearer ${authToken}`;
+  const token = localStorage.getItem('cctv_user_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
 // Token management functions
-export const setAuthToken = (token) => {
-  authToken = token;
-};
-
-export const getAuthToken = () => {
-  return authToken;
-};
+export const saveUserToken = (token) => localStorage.setItem('cctv_user_token', token);
 
 export const getHealth = () => api.get('/health');
 export const getStats = () => api.get('/stats');

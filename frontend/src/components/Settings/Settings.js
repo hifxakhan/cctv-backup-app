@@ -76,19 +76,23 @@ function Settings() {
 
   // Check Google Drive auth status on mount
   const checkDriveAuth = useCallback(async () => {
+    console.log('🔄 Checking drive status...');
     setDriveAuth((prev) => ({ ...prev, loading: true }));
     try {
       const data = await checkDriveStatus();
+      console.log('📡 Drive status response:', data);
+      // ✅ Force the state update even if data is empty
       setDriveAuth({
         loading: false,
-        authenticated: data.authenticated,
-        authMode: data.auth_mode === 'oauth' ? 'oauth' : data.auth_mode,
+        authenticated: data.authenticated === true,
+        authMode: data.auth_mode || null,
         email: data.user?.email || null,
       });
       if (data.authenticated) {
-        setStatus({ type: 'success', message: 'Google Drive connected successfully!' });
+        setStatus({ type: 'success', message: `Connected as ${data.user?.email}` });
       }
     } catch (error) {
+      console.error('❌ Status check failed:', error);
       setDriveAuth({ loading: false, authenticated: false, authMode: null, email: null });
     }
   }, []);

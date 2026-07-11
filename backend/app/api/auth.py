@@ -28,8 +28,8 @@ SCOPES = [
     "https://www.googleapis.com/auth/userinfo.email",
     "openid",
 ]
-REDIRECT_URI = "http://localhost:5000/api/drive/auth/callback"
-FRONTEND_ORIGIN = "http://localhost:3000"
+REDIRECT_URI =  os.getenv('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost:5000/api/drive/oauth2callback')
+FRONTEND_ORIGIN = "https://cctv-backup-app.vercel.app"
 
 
 def _find_client_secrets():

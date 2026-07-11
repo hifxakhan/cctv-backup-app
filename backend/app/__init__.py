@@ -24,7 +24,7 @@ def create_app():
 
     Session(app)
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+    CORS(app, resources={r"/api/*": {"origins": "https://cctv-backup-app.vercel.app"}}, supports_credentials=True)
 
     # Before request: ensure every visitor gets identified with a user cookie
     from .deps import get_or_create_current_user, set_user_cookie

@@ -62,8 +62,8 @@ def set_user_cookie(response, user_id: str) -> None:
         signed,
         max_age=USER_COOKIE_MAX_AGE,
         httponly=True,
-        samesite="Lax",
-        secure=False,  # Set to True in production with HTTPS
+        samesite="None",
+        secure=True,  # Required for cross-site requests with SameSite=None
     )
 
 

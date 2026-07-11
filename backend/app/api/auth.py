@@ -28,7 +28,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/userinfo.email",
     "openid",
 ]
-REDIRECT_URI =  os.getenv('GOOGLE_OAUTH_REDIRECT_URI', 'http://localhost:5000/api/drive/oauth2callback')
+REDIRECT_URI = os.getenv('GOOGLE_OAUTH_REDIRECT_URI', 'https://cctv-backup.onrender.com/api/drive/oauth2callback')
 FRONTEND_ORIGIN = "https://cctv-backup-app.vercel.app"
 
 
@@ -109,16 +109,25 @@ def drive_auth():
         return jsonify({"error": str(e)}), 500
 
 
-@auth_bp.route("/drive/auth/callback")
+@auth_bp.route("/drive/oauth2callback", methods=['GET'])
 def oauth2callback():
-    """Google sends the user back here after login.
-    The user_id is recovered from the Flask session (stored when /drive/auth was called)."""
+    """Handle OAuth callback from Google.
+    This is the standard Google OAuth callback endpoint."""
     try:
-        state = session.get("oauth_state")
-        user_id = session.get("oauth_user_id")
+        # Get the code from the request
+        code = request.args.get('code')
+        state = request.args.get('state')
 
-        if not state:
-            return _error_page("No OAuth state found. Please try connecting again.")
+        if not code:
+            return _error_page("No authorization code received. Please try connecting again.")
+
+        # Try to get user_id from session, or use a fallback
+        user_id = session.get("oauth_user_id")
+        
+        if not user_id:
+            # Try to get from cookie as fallback
+            user_id = get_user_id()
+        
         if not user_id:
             return _error_page("No user session found. Please try connecting again.")
 
@@ -160,6 +169,12 @@ def oauth2callback():
     except Exception as e:
         logger.error("OAuth callback error: %s", e)
         return _error_page(str(e))
+
+
+@auth_bp.route("/drive/auth/callback")
+def oauth2callback_legacy():
+    """Legacy callback route - redirects to the new endpoint."""
+    return redirect("/api/drive/oauth2callback", code=301)
 
 
 @auth_bp.route("/drive/status")

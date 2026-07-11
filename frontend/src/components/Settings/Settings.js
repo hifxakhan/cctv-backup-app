@@ -79,7 +79,8 @@ function Settings() {
     console.log('🔄 Checking drive status...');
     setDriveAuth((prev) => ({ ...prev, loading: true }));
     try {
-      const data = await checkDriveStatus();
+      const response = await checkDriveStatus();
+      const data = response.data;
       console.log('📡 Drive status response:', data);
       // ✅ Force the state update even if data is empty
       setDriveAuth({

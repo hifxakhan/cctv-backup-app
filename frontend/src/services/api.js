@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://cctv-backup.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -32,7 +32,7 @@ export const logoutDrive = () => api.post('/drive/auth/logout');
 // Session-based OAuth endpoints (using client_secrets.json)
 export const connectDrive = () => {
   // Open Google OAuth popup
-  window.open('http://localhost:5000/api/drive/auth', 'Connect Google Drive', 'width=500,height=600');
+  window.open('https://cctv-backup.onrender.com/api/drive/auth', 'Connect Google Drive', 'width=500,height=600');
 };
 export const checkDriveStatus = () => api.get('/drive/status');
 export const disconnectDrive = () => api.post('/drive/disconnect');

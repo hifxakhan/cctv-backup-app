@@ -8,7 +8,7 @@ export const useWebSocket = () => {
 
   useEffect(() => {
     let isMounted = true;
-    const client = io(process.env.REACT_APP_API_URL || 'http://localhost:5000', {
+    const client = io(process.env.REACT_APP_API_URL || 'https://cctv-backup.onrender.com', {
       transports: ['polling'],
       upgrade: false,
       rememberUpgrade: false,

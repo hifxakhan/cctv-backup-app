@@ -212,7 +212,7 @@ function Settings() {
     const top = window.screen.height / 2 - height / 2;
 
     const popup = window.open(
-      'http://localhost:5000/api/drive/auth',
+      'https://cctv-backup.onrender.com/api/drive/auth',
       'Connect Google Drive',
       `width=${width},height=${height},left=${left},top=${top}`
     );

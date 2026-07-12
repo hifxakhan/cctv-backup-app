@@ -1,0 +1,6 @@
+onvif-zeep==0.2.12
+zeep==4.2.1
+google-auth==2.55.1
+google-auth-oauthlib==1.1.0
+google-api-python-client==2.108.0
+requests==2.34.2

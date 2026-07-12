@@ -1,0 +1,11 @@
+{
+  "onvif_host": "192.168.1.100",
+  "onvif_port": 80,
+  "onvif_user": "admin",
+  "onvif_password": "PUT_VERIFICATION_CODE_FROM_CAMERA_STICKER_HERE",
+  "days_back": 3,
+  "drive_folder": "CCTV_Backup",
+  "sync_interval_minutes": 60,
+  "backend_report_url": "",
+  "agent_token": ""
+}

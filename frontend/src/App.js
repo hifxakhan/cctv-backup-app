@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, CssBaseline, Toolbar } from '@mui/material';
+import { Box, CssBaseline, Toolbar, useMediaQuery, useTheme } from '@mui/material';
 import Navbar from './components/Common/Navbar';
 import Sidebar from './components/Common/Sidebar';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -11,6 +11,13 @@ import './App.css';
 
 function App() {
   const [view, setView] = useState('dashboard');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const renderView = () => {
     switch (view) {
@@ -30,9 +37,23 @@ function App() {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f5f7fb' }}>
       <CssBaseline />
-      <Navbar />
-      <Sidebar activeView={view} onNavigate={setView} />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Navbar onMenuClick={handleDrawerToggle} />
+      <Sidebar 
+        activeView={view} 
+        onNavigate={setView} 
+        mobileOpen={mobileOpen}
+        onDrawerToggle={handleDrawerToggle}
+        isMobile={isMobile}
+      />
+      <Box 
+        component="main" 
+        sx={{ 
+          flexGrow: 1, 
+          p: { xs: 1, sm: 2, md: 3 },
+          width: { xs: '100%', sm: `calc(100% - 240px)` },
+          minHeight: '100vh'
+        }}
+      >
         <Toolbar />
         {renderView()}
       </Box>

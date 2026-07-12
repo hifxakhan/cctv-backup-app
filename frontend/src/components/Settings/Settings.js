@@ -198,7 +198,7 @@ function Settings() {
       if (errors.local_storage_path) {
         setErrors((current) => ({ ...current, local_storage_path: '' }));
       }
-      setStatus({ type: 'success', message: `Folder selected: ${folderName}` });
+      setStatus({ type: 'success', message: `Recordings will be saved to: ${folderName}` });
     }
   };
 
@@ -216,7 +216,7 @@ function Settings() {
 
     setStatus({
       type: 'info',
-      message: 'A Google login window has opened. After signing in, this page will automatically detect the connection.',
+      message: 'A Google login window has opened. After signing in, your CCTV recordings will be uploaded to the selected Google Drive folder.',
     });
   };
 

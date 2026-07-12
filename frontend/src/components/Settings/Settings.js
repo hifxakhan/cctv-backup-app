@@ -32,14 +32,12 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import './Settings.css';
 import {
-  browseFolder,
   getConfig,
   getProtocol,
   saveConfig,
   saveProtocol,
   checkDriveStatus,
   disconnectDrive,
-  connectDrive,
   saveUserToken,
 } from '../../services/api';
 
@@ -182,21 +180,11 @@ function Settings() {
     return validationErrors;
   };
 
-  const handleBrowseFolder = async () => {
-    try {
-      const response = await browseFolder();
-      if (response.data.status === 'success' && response.data.path) {
-        setForm((current) => ({ ...current, local_storage_path: response.data.path }));
-        if (errors.local_storage_path) {
-          setErrors((current) => ({ ...current, local_storage_path: '' }));
-        }
-        setStatus({ type: 'success', message: `Folder selected: ${response.data.path}` });
-      }
-    } catch (_backendError) {
-      if (folderInputRef.current) {
-        folderInputRef.current.value = '';
-        folderInputRef.current.click();
-      }
+  const handleBrowseFolder = () => {
+    // Use browser's native folder picker (works everywhere)
+    if (folderInputRef.current) {
+      folderInputRef.current.value = '';
+      folderInputRef.current.click();
     }
   };
 
@@ -338,10 +326,10 @@ function Settings() {
                     value={form.local_storage_path}
                     onChange={handleChange}
                     error={Boolean(errors.local_storage_path)}
-                    helperText={errors.local_storage_path}
+                    helperText={errors.local_storage_path || 'Select a folder where recordings will be saved'}
                     InputProps={{
                       endAdornment: (
-                        <Tooltip title="Browse for folder">
+                        <Tooltip title="Select a folder on your computer">
                           <IconButton onClick={handleBrowseFolder} edge="end">
                             <FolderOpenIcon />
                           </IconButton>
@@ -379,10 +367,10 @@ function Settings() {
                     value={form.local_storage_path}
                     onChange={handleChange}
                     error={Boolean(errors.local_storage_path)}
-                    helperText={errors.local_storage_path}
+                    helperText={errors.local_storage_path || 'Select a folder where recordings will be saved'}
                     InputProps={{
                       endAdornment: (
-                        <Tooltip title="Browse for folder">
+                        <Tooltip title="Select a folder on your computer">
                           <IconButton onClick={handleBrowseFolder} edge="end">
                             <FolderOpenIcon />
                           </IconButton>

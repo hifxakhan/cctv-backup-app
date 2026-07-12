@@ -24,7 +24,12 @@ def create_app():
 
     Session(app)
 
-    CORS(app, resources={r"/api/*": {"origins": "https://cctv-backup-app.vercel.app"}}, supports_credentials=True)
+    # Allow all origins for testing (you can restrict later)
+    CORS(app,
+         supports_credentials=True,
+         origins=["https://cctv-backup-app.vercel.app", "http://localhost:3000"],
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
     # Before request: ensure every visitor gets identified with a user cookie
     from .deps import get_or_create_current_user, set_user_cookie

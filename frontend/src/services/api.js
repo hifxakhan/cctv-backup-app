@@ -35,7 +35,7 @@ export const getOnvifRecordings = (params = {}) => api.get('/onvif/recordings', 
 export const getOnvifSdInfo = () => api.get('/onvif/sd-info');
 export const startOnvifSync = () => api.post('/onvif/sync');
 export const deleteOnvifRecording = (recordingToken) => api.post('/onvif/delete', { recording_token: recordingToken });
-export const browseFolder = () => api.get('/folder/browse');
+export const browseFolder = (path = '/tmp') => api.get(`/folder/browse?path=${encodeURIComponent(path)}`);
 
 // Google Drive OAuth endpoints (session-based)
 export const getDriveAuthUrl = () => api.get('/drive/auth/url');

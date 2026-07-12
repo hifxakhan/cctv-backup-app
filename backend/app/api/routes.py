@@ -114,6 +114,47 @@ def save_config():
         return jsonify({"status": "error", "message": str(exc)}), 500
 
 
+@api_bp.route("/folder/browse", methods=["GET"])
+def browse_folder():
+    """Browse directories on the server (Render's file system)."""
+    try:
+        # Get the current path from query param, default to /tmp
+        current_path = request.args.get('path', '/tmp')
+        
+        # Security: prevent browsing outside allowed directories
+        allowed_prefixes = ['/tmp', '/app', '/opt/render', '/home']
+        if not any(current_path.startswith(p) for p in allowed_prefixes):
+            current_path = '/tmp'
+        
+        # List directories
+        items = []
+        try:
+            for item in os.listdir(current_path):
+                full_path = os.path.join(current_path, item)
+                if os.path.isdir(full_path) and not item.startswith('.'):
+                    items.append({
+                        'name': item,
+                        'path': full_path,
+                        'type': 'directory'
+                    })
+        except PermissionError:
+            pass
+        
+        # Sort directories
+        items.sort(key=lambda x: x['name'].lower())
+        
+        return jsonify({
+            'status': 'success',
+            'current_path': current_path,
+            'directories': items
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+
 @api_bp.route("/agent/config", methods=["GET"])
 def get_agent_config():
     """Agent calls this with its Bearer token to fetch this user's camera settings."""

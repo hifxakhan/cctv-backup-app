@@ -1,9 +1,12 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Alert,
   Button,
   Card,
   CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
   FormControl,
   FormHelperText,
   Grid,
@@ -23,6 +26,12 @@ import {
   Box,
   Chip,
   CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  Breadcrumbs,
+  Link,
 } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import CloudIcon from '@mui/icons-material/Cloud';
@@ -39,6 +48,7 @@ import {
   checkDriveStatus,
   disconnectDrive,
   saveUserToken,
+  browseFolder,
 } from '../../services/api';
 
 const initialForm = {
@@ -64,7 +74,10 @@ function Settings() {
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState({ type: 'success', message: '' });
   const [errors, setErrors] = useState({});
-  const folderInputRef = useRef(null);
+  const [folderDialogOpen, setFolderDialogOpen] = useState(false);
+  const [currentPath, setCurrentPath] = useState('/tmp');
+  const [directories, setDirectories] = useState([]);
+  const [folderLoading, setFolderLoading] = useState(false);
   const [driveAuth, setDriveAuth] = useState({
     loading: true,
     authenticated: false,
@@ -180,26 +193,27 @@ function Settings() {
     return validationErrors;
   };
 
-  const handleBrowseFolder = () => {
-    // Use browser's native folder picker (works everywhere)
-    if (folderInputRef.current) {
-      folderInputRef.current.value = '';
-      folderInputRef.current.click();
+  const openFolderBrowser = async (path = '/tmp') => {
+    setFolderLoading(true);
+    try {
+      const response = await browseFolder(path);
+      if (response.data.status === 'success') {
+        setCurrentPath(response.data.current_path);
+        setDirectories(response.data.directories);
+        setFolderDialogOpen(true);
+      }
+    } catch (error) {
+      console.error('Failed to browse folders:', error);
+      setStatus({ type: 'error', message: 'Failed to browse folders' });
+    } finally {
+      setFolderLoading(false);
     }
   };
 
-  const handleFolderSelected = (event) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      const relativePath = files[0].webkitRelativePath;
-      const separator = relativePath.includes('\\') ? '\\' : '/';
-      const folderName = relativePath.split(separator)[0];
-      setForm((current) => ({ ...current, local_storage_path: folderName }));
-      if (errors.local_storage_path) {
-        setErrors((current) => ({ ...current, local_storage_path: '' }));
-      }
-      setStatus({ type: 'success', message: `Recordings will be saved to: ${folderName}` });
-    }
+  const selectFolder = (path) => {
+    setForm((current) => ({ ...current, local_storage_path: path }));
+    setFolderDialogOpen(false);
+    setStatus({ type: 'success', message: `Folder selected: ${path}` });
   };
 
   const handleConnectDrive = () => {
@@ -329,8 +343,8 @@ function Settings() {
                     helperText={errors.local_storage_path || 'Select a folder where recordings will be saved'}
                     InputProps={{
                       endAdornment: (
-                        <Tooltip title="Select a folder on your computer">
-                          <IconButton onClick={handleBrowseFolder} edge="end">
+                        <Tooltip title="Browse for folder">
+                          <IconButton onClick={() => openFolderBrowser()} edge="end">
                             <FolderOpenIcon />
                           </IconButton>
                         </Tooltip>
@@ -370,8 +384,8 @@ function Settings() {
                     helperText={errors.local_storage_path || 'Select a folder where recordings will be saved'}
                     InputProps={{
                       endAdornment: (
-                        <Tooltip title="Select a folder on your computer">
-                          <IconButton onClick={handleBrowseFolder} edge="end">
+                        <Tooltip title="Browse for folder">
+                          <IconButton onClick={() => openFolderBrowser()} edge="end">
                             <FolderOpenIcon />
                           </IconButton>
                         </Tooltip>
@@ -476,14 +490,44 @@ function Settings() {
           <Button variant="contained" onClick={handleSave}>Save Settings</Button>
         </Stack>
 
-        <input
-          ref={folderInputRef}
-          type="file"
-          webkitdirectory=""
-          directory=""
-          style={{ display: 'none' }}
-          onChange={handleFolderSelected}
-        />
+        {/* Folder Browser Dialog */}
+        <Dialog open={folderDialogOpen} onClose={() => setFolderDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Select a Folder</DialogTitle>
+          <DialogContent>
+            <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2, mt: 1 }}>
+              <Link component="button" variant="body2" onClick={() => openFolderBrowser('/tmp')}>
+                Root
+              </Link>
+              {currentPath.split('/').filter(p => p).map((part, index, arr) => {
+                const path = '/' + arr.slice(0, index + 1).join('/');
+                return (
+                  <Link key={index} component="button" variant="body2" onClick={() => openFolderBrowser(path)}>
+                    {part}
+                  </Link>
+                );
+              })}
+            </Breadcrumbs>
+
+            {folderLoading ? (
+              <Typography>Loading...</Typography>
+            ) : (
+              <List>
+                {directories.map((dir) => (
+                  <ListItem key={dir.path} disablePadding>
+                    <ListItemButton onClick={() => selectFolder(dir.path)}>
+                      <ListItemText primary={dir.name} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+                {directories.length === 0 && (
+                  <Typography sx={{ mt: 2, color: 'text.secondary' }}>
+                    No folders found
+                  </Typography>
+                )}
+              </List>
+            )}
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );

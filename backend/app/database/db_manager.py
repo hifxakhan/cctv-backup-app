@@ -59,6 +59,31 @@ class DatabaseManager:
         finally:
             conn.close()
 
+        # Camera configs - one per user
+        conn = sqlite3.connect(self.db_path)
+        try:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS camera_configs (
+                    user_id TEXT PRIMARY KEY,
+                    protocol_type TEXT DEFAULT 'onvif',
+                    storage_destination TEXT DEFAULT 'both',
+                    onvif_host TEXT,
+                    onvif_port INTEGER DEFAULT 80,
+                    onvif_user TEXT,
+                    onvif_password TEXT,
+                    onvif_days_back INTEGER DEFAULT 3,
+                    drive_folder TEXT DEFAULT 'CCTV_Backup',
+                    sync_interval INTEGER DEFAULT 60,
+                    updated_at TEXT NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id)
+                )
+                """
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
     def record_upload(self, file_name: str, file_path: str, file_size: int, md5_hash: str, drive_file_id: str, drive_link: str) -> Dict[str, Any]:
         conn = sqlite3.connect(self.db_path)
         try:
@@ -291,5 +316,55 @@ class DatabaseManager:
             if not row:
                 return None
             return self.get_google_credentials(row[0])
+        finally:
+            conn.close()
+
+    def save_camera_config(self, user_id: str, config: dict) -> None:
+        """Save camera configuration for a user."""
+        now = datetime.now(timezone.utc).isoformat()
+        conn = sqlite3.connect(self.db_path)
+        try:
+            conn.execute(
+                """
+                INSERT INTO camera_configs
+                    (user_id, protocol_type, storage_destination, onvif_host, onvif_port,
+                     onvif_user, onvif_password, onvif_days_back, drive_folder, sync_interval, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(user_id) DO UPDATE SET
+                    protocol_type=excluded.protocol_type,
+                    storage_destination=excluded.storage_destination,
+                    onvif_host=excluded.onvif_host,
+                    onvif_port=excluded.onvif_port,
+                    onvif_user=excluded.onvif_user,
+                    onvif_password=excluded.onvif_password,
+                    onvif_days_back=excluded.onvif_days_back,
+                    drive_folder=excluded.drive_folder,
+                    sync_interval=excluded.sync_interval,
+                    updated_at=excluded.updated_at
+                """,
+                (
+                    user_id, config.get("protocol_type", "onvif"), config.get("storage_destination", "both"),
+                    config.get("onvif_host", ""), int(config.get("onvif_port", 80)),
+                    config.get("onvif_user", ""), config.get("onvif_password", ""),
+                    int(config.get("onvif_days_back", 3)), config.get("drive_folder", "CCTV_Backup"),
+                    int(config.get("sync_interval", 60)), now,
+                ),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_camera_config(self, user_id: str) -> Optional[Dict[str, Any]]:
+        """Get camera configuration for a user."""
+        conn = sqlite3.connect(self.db_path)
+        try:
+            cursor = conn.execute(
+                "SELECT * FROM camera_configs WHERE user_id = ?", (user_id,)
+            )
+            row = cursor.fetchone()
+            if not row:
+                return None
+            columns = [d[0] for d in cursor.description]
+            return dict(zip(columns, row))
         finally:
             conn.close()
